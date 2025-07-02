@@ -31,57 +31,42 @@ variable "vms_ssh_root_key" {
   description = "SSH public key"
 }
 
-# VM Web variables
-variable "vm_web_name" {
+variable "environment" {
   type        = string
-  default     = "netology-develop-platform-web"
-  description = "Web server name"
+  default     = "develop"
+  description = "Environment name (e.g., develop, stage, prod)"
 }
 
-variable "vm_web_platform_id" {
+variable "vm_role" {
   type        = string
-  default     = "standard-v3"
-  description = "Platform ID for web server"
+  default     = "platform"
+  description = "Role of the VM (e.g., platform, database)"
 }
 
-variable "vm_web_cores" {
-  type        = number
-  default     = 2
-  description = "CPU cores for web server"
+variable "vms_resources" {
+  type = map(object({
+    cores         = number
+    memory        = number
+    core_fraction = number
+  }))
+  default = {
+    web = {
+      cores         = 2
+      memory        = 1
+      core_fraction = 20
+    }
+    db = {
+      cores         = 2
+      memory        = 2
+      core_fraction = 20
+    }
+  }
 }
 
-variable "vm_web_memory" {
-  type        = number
-  default     = 1
-  description = "Memory in GB for web server"
-}
-
-variable "vm_web_core_fraction" {
-  type        = number
-  default     = 20
-  description = "CPU core fraction for web server"
-}
-
-variable "vm_web_preemptible" {
-  type        = bool
-  default     = true
-  description = "Use preemptible instance for web server"
-}
-
-variable "vm_web_nat" {
-  type        = bool
-  default     = true
-  description = "Enable NAT for web server"
-}
-
-variable "vm_web_serial_port_enable" {
-  type        = number
-  default     = 1
-  description = "Enable serial port for web server"
-}
-
-variable "vm_web_image_family" {
-  type        = string
-  default     = "ubuntu-2204-lts"
-  description = "Image family for web server"
+variable "common_metadata" {
+  type = map(any)
+  default = {
+    serial-port-enable = 1
+    ssh-keys           = "ubuntu:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEPLbYo2SQ+P+AGPvlhAh7iKH/yMcFXVgKfFapHK98sY dev-sokolkov@compute-vm-2-2-10-ssd-1750679962256"
+  }
 }
